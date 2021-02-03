@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     parser = pl.Trainer.add_argparse_args(parser)
     hparams = parser.parse_args()
-    print(f'Training Model on NISP Dataset\n#Cores = {hparams.n_workers}\t#GPU = {hparams.gpu}')
+    print(f'Training Model on TIMIT Dataset\n#Cores = {hparams.n_workers}\t#GPU = {hparams.gpu}')
 
     # hyperparameters and details about the model 
     HPARAMS = {

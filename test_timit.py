@@ -2,8 +2,8 @@ from argparse import ArgumentParser
 from multiprocessing import Pool
 import os
 
-from NISP.dataset import NISPDataset
-from NISP.model import Wav2VecModel
+from TIMIT.dataset import TIMITDataset
+from TIMIT.model import Wav2VecModel
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -16,8 +16,8 @@ import torch.utils.data as data
 if __name__ == "__main__":
 
     parser = ArgumentParser(add_help=True)
-    parser.add_argument('--data_path', type=str, default='/home/shangeth/NISP/dataset/NISP-Dataset-master/final_data_16k')
-    parser.add_argument('--speaker_csv_path', type=str, default='/home/shangeth/NISP/dataset/NISP-Dataset-master/total_spkrinfo.list')
+    parser.add_argument('--data_path', type=str, default='/home/shangeth/speaker_profiling/datadir/wav_data')
+    parser.add_argument('--speaker_csv_path', type=str, default='/home/shangeth/speaker_profiling/src/data_info_height_age.csv')
     parser.add_argument('--timit_wav_len', type=int, default=16000*5)
     parser.add_argument('--batch_size', type=int, default=10)
     parser.add_argument('--epochs', type=int, default=100)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     }
 
     # Testing Dataset
-    test_set = NISPDataset(
+    test_set = TIMITDataset(
         wav_folder = os.path.join(HPARAMS['data_path'], 'TEST'),
         csv_file = HPARAMS['speaker_csv_path'],
         wav_len = HPARAMS['data_wav_len'],
@@ -78,7 +78,7 @@ if __name__ == "__main__":
                             gpus=hparams.gpu, 
                             )
 
-        print('\nTesting on NISP Dataset:\n')
+        print('\nTesting on TIMIT Dataset:\n')
         trainer.test(model, test_dataloaders=testloader)
     else:
         print('Model check point for testing is not provided!!!')
