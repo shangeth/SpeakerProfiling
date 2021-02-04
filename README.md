@@ -27,7 +27,7 @@ git clone https://github.com/iiscleap/NISP-Dataset.git
 python prepare_timit_data.py --path='path to timit data folder'
 
 # NISP Dataset
-python prepare_nisp_data.pt --nisp_repo_path='path to timit data repo folder'
+python prepare_nisp_data.pt --nisp_repo_path='path to nisp data repo folder'
 ```
 
 ### Training(Dev Model, to make sure everything is set as expected for training) 
