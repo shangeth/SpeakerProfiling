@@ -69,6 +69,13 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 |       [4] 2009      	|   6.8   	|   6.3  	|   5.3   	|   5.1  	|   -  	|    -   	|   -  	|    -   	|            	|
 |      Our Method     	|   7.66  	|   **6.1**  	|   5.72  	|  **4.94**  	| **7.12** 	|  **7.73**  	| **5.09** 	|  5.31  	|    0.992   	|
 
+### NISP
+|    Model   	| Height 	|  RMSE  	| Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|
+|:----------:	|:------:	|:------:	|:------:	|:------:	|:----:	|:------:	|:----:	|:------:	|:----------:	|
+|            	|  Male  	| Female 	|  Male  	| Female 	| Male 	| Female 	| Male 	| Female 	|            	|
+|   [1] TMP  	| 6.17   	| 6.93   	| 5.22   	| 5.30   	| 5.60 	| 5.57   	| 4.40 	| 4.42   	|            	|
+| [1] Comb-3 	| 6.13   	| 6.70   	| 5.16   	| 5.30   	| 5.63 	| 4.99   	| 3.80 	| 3.76   	|            	|
+| Our Method 	| 6.49   	| 6.37   	| 5.32   	| 5.12   	| 5.48 	| 5.71   	| 3.70 	| 4.22   	| 0.984      	|
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
