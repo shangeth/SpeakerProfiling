@@ -57,6 +57,18 @@ python test_timit.py --data_path='path to final data folder' --model_checkpoint=
 python test_nisp.py --data_path='path to final data folder' --model_checkpoint='path to saved model checkpoint'
 ```
 
+## Results
+### TIMIT
+|        Model        	|  Height 	|  RMSE  	|  Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|
+|:-------------------:	|:-------:	|:------:	|:-------:	|:------:	|:----:	|:------:	|:----:	|:------:	|:----------:	|
+|                     	|   Male  	| Female 	|   Male  	| Female 	| Male 	| Female 	| Male 	| Female 	|            	|
+|       [1] 2019      	|   6.85  	|  6.29  	|    -    	|    -   	|  7.6 	|  8.63  	|   -  	|    -   	|            	|
+|  [2] 2016 (fusion)  	|   6.7   	|   6.1  	|   5.0   	|   5.0  	|  7.8 	|   8.9  	|  5.5 	|   6.5  	|            	|
+| [2] 2016 (baseline) 	|   7.0   	|   6.5  	|   5.3   	|   5.2  	|  8.1 	|   9.1  	|  5.7 	|   6.2  	|            	|
+|       [3] 2020      	|    -    	|    -   	|    -    	|    -   	| 7.24 	|  8.12  	| 5.12 	|  5.29  	|    0.996   	|
+|       [4] 2009      	|   6.8   	|   6.3  	|   5.3   	|   5.1  	|   -  	|    -   	|   -  	|    -   	|            	|
+|      Our Method     	|   7.66  	|   6.1  	|   5.72  	|  4.94  	| 7.12 	|  7.73  	| 5.09 	|  5.31  	|    0.992   	|
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
