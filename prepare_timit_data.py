@@ -6,7 +6,7 @@ import argparse
 from sklearn.model_selection import train_test_split
 
 my_parser = argparse.ArgumentParser(description='Path to the TIMIT dataset folder')
-my_parser.add_argument('path',
+my_parser.add_argument('--path',
                        metavar='path',
                        type=str,
                        help='the path to dataset folder')
