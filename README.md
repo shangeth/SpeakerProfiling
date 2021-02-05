@@ -2,6 +2,8 @@
 
 This Repository contains the code for estimating the Age, Height and Gender of a speaker with their speech signal. The repository experiments with both TIMIT and NISP Dataset.
 
+![model architeture](assets/wav2vecframework.PNG)
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the required packages for preparing the dataset, training and testing the model.
