@@ -76,6 +76,7 @@ for file in os.listdir(final_train_path):
         dst = os.path.join(final_val_path, file)
         shutil.move(src, dst)
 
+print('Wav Data saved at ', final_data_path)
 
 
 
