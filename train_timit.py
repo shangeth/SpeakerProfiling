@@ -7,28 +7,31 @@ from TIMIT.model import Wav2VecModel
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning import Trainer
 
+from config import TIMITConfig
 import torch
 import torch.utils.data as data
 
 if __name__ == "__main__":
 
     parser = ArgumentParser(add_help=True)
-    parser.add_argument('--data_path', type=str, default='/home/shangeth/speaker_profiling/datadir/wav_data')
-    parser.add_argument('--speaker_csv_path', type=str, default='Dataset/data_info_height_age.csv')
-    parser.add_argument('--timit_wav_len', type=int, default=16000*5)
-    parser.add_argument('--batch_size', type=int, default=100)
-    parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--alpha', type=float, default=1)
-    parser.add_argument('--beta', type=float, default=1)
-    parser.add_argument('--gamma', type=float, default=1)
-    parser.add_argument('--hidden_size', type=float, default=256)
-    parser.add_argument('--gpu', type=int, default="1")
-    parser.add_argument('--n_workers', type=int, default=int(int(Pool()._processes)*0.5))
+    parser.add_argument('--data_path', type=str, default=TIMITConfig.data_path)
+    parser.add_argument('--speaker_csv_path', type=str, default=TIMITConfig.speaker_csv_path)
+    parser.add_argument('--timit_wav_len', type=int, default=TIMITConfig.timit_wav_len)
+    parser.add_argument('--batch_size', type=int, default=TIMITConfig.batch_size)
+    parser.add_argument('--epochs', type=int, default=TIMITConfig.epochs)
+    parser.add_argument('--alpha', type=float, default=TIMITConfig.alpha)
+    parser.add_argument('--beta', type=float, default=TIMITConfig.beta)
+    parser.add_argument('--gamma', type=float, default=TIMITConfig.gamma)
+    parser.add_argument('--hidden_size', type=float, default=TIMITConfig.hidden_size)
+    parser.add_argument('--gpu', type=int, default=TIMITConfig.gpu)
+    parser.add_argument('--n_workers', type=int, default=TIMITConfig.n_workers)
     parser.add_argument('--dev', type=str, default=False)
-    parser.add_argument('--model_checkpoint', type=str, default=None)
-    parser.add_argument('--noise_dataset_path', type=str, default='/home/shangeth/speaker_profiling/noise_datadir/noises')
+    parser.add_argument('--model_checkpoint', type=str, default=TIMITConfig.model_checkpoint)
+    parser.add_argument('--noise_dataset_path', type=str, default=TIMITConfig.noise_dataset_path)
 
     parser = pl.Trainer.add_argparse_args(parser)
     hparams = parser.parse_args()
@@ -44,7 +47,7 @@ if __name__ == "__main__":
         'data_label_scale' : 'Standardization',
 
         'training_optimizer' : 'Adam',
-        'training_lr' : 1e-3,
+        'training_lr' : TIMITConfig.lr,
         'training_lr_scheduler' : '-',
 
         'model_hidden_size' : hparams.hidden_size,
@@ -102,7 +105,7 @@ if __name__ == "__main__":
 
 
     #Training the Model
-    logger = TensorBoardLogger('NISP_logs', name='')
+    logger = TensorBoardLogger('TIMIT_logs', name='')
     logger.log_hyperparams(HPARAMS)
 
     model = Wav2VecModel(HPARAMS)
@@ -112,12 +115,36 @@ if __name__ == "__main__":
         mode='min',
         verbose=1)
 
-    trainer = pl.Trainer(fast_dev_run=hparams.dev, 
-                        gpus=hparams.gpu, 
-                        max_epochs=hparams.epochs, 
-                        checkpoint_callback=checkpoint_callback,
-                        logger=logger,
-                        resume_from_checkpoint=hparams.model_checkpoint
-                        )
+    early_stop_callback = EarlyStopping(
+        monitor='val_loss',
+        min_delta=0.00,
+        patience=10,
+        verbose=True,
+        mode='min'
+        )
+
+    trainer = Trainer(
+        fast_dev_run=hparams.dev, 
+        gpus=hparams.gpu, 
+        max_epochs=hparams.epochs, 
+        checkpoint_callback=checkpoint_callback,
+        # early_stop_callback=early_stop_callback,
+        callbacks=[
+            EarlyStopping(
+                monitor='v_loss',
+                min_delta=0.00,
+                patience=10,
+                verbose=True,
+                mode='min'
+                )
+        ],
+        logger=logger,
+        resume_from_checkpoint=hparams.model_checkpoint,
+        distributed_backend='ddp'
+        )
 
     trainer.fit(model, train_dataloader=trainloader, val_dataloaders=valloader)
+
+    print('\n\nCompleted Training...\nTesting the model with checkpoint -', checkpoint_callback.best_model_path)
+    model = Wav2VecModel.load_from_checkpoint(checkpoint_callback.best_model_path)
+    trainer.test(model, test_dataloaders=testloader)

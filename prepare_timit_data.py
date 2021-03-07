@@ -61,8 +61,8 @@ M_speakers_id = list(set(M_speakers_id))
 F_speakers_id = list(set(F_speakers_id))
 
 
-train_m, val_m = train_test_split(M_speakers_id, test_size=0.15)
-train_f, val_f = train_test_split(F_speakers_id, test_size=0.15)
+train_m, val_m = train_test_split(M_speakers_id, test_size=0.10)
+train_f, val_f = train_test_split(F_speakers_id, test_size=0.10)
 
 
 train_ids = train_m + train_f

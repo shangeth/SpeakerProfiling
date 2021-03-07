@@ -6,8 +6,6 @@ import numpy as np
 
 import torchaudio
 import wavencoder
-import random
-
 
 class TIMITDataset(Dataset):
     def __init__(self,
@@ -29,16 +27,22 @@ class TIMITDataset(Dataset):
         self.df.set_index('ID', inplace=True)
         self.gender_dict = {'M' : 0, 'F' : 1}
 
-        self.train_transform = wavencoder.transforms.Compose([
-            wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random')
-            ])
+        if noise_dataset_path:
+
+            self.train_transform = wavencoder.transforms.Compose([
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.5),
+                wavencoder.transforms.Clipping(p=0.5),
+                ])
+        else:
+            self.train_transform = wavencoder.transforms.Compose([
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.Clipping(p=0.5),
+                ])
 
         self.test_transform = wavencoder.transforms.Compose([
             wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len)
             ])
-
-        if self.noise_dataset_path:
-            self.noise_transform = wavencoder.transforms.AdditiveNoise(self.noise_dataset_path)
 
     
     def __len__(self):
@@ -66,13 +70,7 @@ class TIMITDataset(Dataset):
 
         wav, _ = torchaudio.load(os.path.join(self.wav_folder, file))
         if self.is_train:
-            # crop
             wav = self.train_transform(wav)
-            # apply noise to wav 50% of time
-            if self.noise_dataset_path and random.random() < 0.5:
-                wav = self.noise_transform(wav)
-
-
             if type(wav).__module__ == np.__name__:
                     wav = torch.tensor(wav)
         else:

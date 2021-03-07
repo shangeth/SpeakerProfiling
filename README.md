@@ -18,6 +18,7 @@ pip install -r requirements.txt
 ```
 # Timit Dataset
 wget https://data.deepai.org/timit.zip
+unzip timit.zip -d 'path to timit data folder'
 
 # NISP Dataset
 git clone https://github.com/iiscleap/NISP-Dataset.git
