@@ -27,7 +27,7 @@ class TIMITDataset(Dataset):
         self.df.set_index('ID', inplace=True)
         self.gender_dict = {'M' : 0, 'F' : 1}
 
-        if noise_dataset_path:
+        if self.noise_dataset_path:
 
             self.train_transform = wavencoder.transforms.Compose([
                 wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),

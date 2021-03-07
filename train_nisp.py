@@ -3,32 +3,34 @@ from multiprocessing import Pool
 import os
 
 from NISP.dataset import NISPDataset
-from NISP.model import Wav2VecModel
+from NISP.lightning_model import LightningModel 
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
 
+from config import NISPConfig
 import torch
 import torch.utils.data as data
 
 if __name__ == "__main__":
 
     parser = ArgumentParser(add_help=True)
-    parser.add_argument('--data_path', type=str, default='/home/shangeth/NISP/dataset/NISP-Dataset-master/final_data_16k')
-    parser.add_argument('--speaker_csv_path', type=str, default='/home/shangeth/NISP/dataset/NISP-Dataset-master/total_spkrinfo.list')
-    parser.add_argument('--timit_wav_len', type=int, default=16000*5)
-    parser.add_argument('--batch_size', type=int, default=128)
-    parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--alpha', type=float, default=1)
-    parser.add_argument('--beta', type=float, default=1)
-    parser.add_argument('--gamma', type=float, default=1)
-    parser.add_argument('--hidden_size', type=float, default=128)
-    parser.add_argument('--gpu', type=int, default="1")
-    parser.add_argument('--n_workers', type=int, default=int(int(Pool()._processes)*0.5))
+    parser.add_argument('--data_path', type=str, default=NISPConfig.data_path)
+    parser.add_argument('--speaker_csv_path', type=str, default=NISPConfig.speaker_csv_path)
+    parser.add_argument('--timit_wav_len', type=int, default=NISPConfig.timit_wav_len)
+    parser.add_argument('--batch_size', type=int, default=NISPConfig.batch_size)
+    parser.add_argument('--epochs', type=int, default=NISPConfig.epochs)
+    parser.add_argument('--alpha', type=float, default=NISPConfig.alpha)
+    parser.add_argument('--beta', type=float, default=NISPConfig.beta)
+    parser.add_argument('--gamma', type=float, default=NISPConfig.gamma)
+    parser.add_argument('--hidden_size', type=float, default=NISPConfig.hidden_size)
+    parser.add_argument('--gpu', type=int, default=NISPConfig.gpu)
+    parser.add_argument('--n_workers', type=int, default=NISPConfig.n_workers)
     parser.add_argument('--dev', type=str, default=False)
-    parser.add_argument('--model_checkpoint', type=str, default=None)
-    parser.add_argument('--noise_dataset_path', type=str, default='/home/shangeth/speaker_profiling/noise_datadir/noises')
+    parser.add_argument('--model_checkpoint', type=str, default=NISPConfig.model_checkpoint)
+    parser.add_argument('--noise_dataset_path', type=str, default=NISPConfig.noise_dataset_path)
 
     parser = pl.Trainer.add_argparse_args(parser)
     hparams = parser.parse_args()
@@ -44,7 +46,7 @@ if __name__ == "__main__":
         'data_label_scale' : 'Standardization',
 
         'training_optimizer' : 'Adam',
-        'training_lr' : 1e-3,
+        'training_lr' : NISPConfig.lr,
         'training_lr_scheduler' : '-',
 
         'model_hidden_size' : hparams.hidden_size,
@@ -105,7 +107,7 @@ if __name__ == "__main__":
     logger = TensorBoardLogger('NISP_logs', name='')
     logger.log_hyperparams(HPARAMS)
 
-    model = Wav2VecModel(HPARAMS)
+    model = LightningModel(HPARAMS)
 
     checkpoint_callback = ModelCheckpoint(
         monitor='v_loss', 
@@ -116,8 +118,23 @@ if __name__ == "__main__":
                         gpus=hparams.gpu, 
                         max_epochs=hparams.epochs, 
                         checkpoint_callback=checkpoint_callback,
+                        callbacks=[
+                            EarlyStopping(
+                                monitor='v_loss',
+                                min_delta=0.00,
+                                patience=10,
+                                verbose=True,
+                                mode='min'
+                                )
+                        ],
                         logger=logger,
                         resume_from_checkpoint=hparams.model_checkpoint
+                        distributed_backend='ddp'
                         )
 
     trainer.fit(model, train_dataloader=trainloader, val_dataloaders=valloader)
+
+    
+    print('\n\nCompleted Training...\nTesting the model with checkpoint -', checkpoint_callback.best_model_path)
+    model = LightningModel.load_from_checkpoint(checkpoint_callback.best_model_path)
+    trainer.test(model, test_dataloaders=testloader)

@@ -3,11 +3,9 @@ from multiprocessing import Pool
 import os
 
 from TIMIT.dataset import TIMITDataset
-from TIMIT.model import Wav2VecModel
+from TIMIT.lightning_model import Wav2VecModel as LightningModel
 
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.loggers import TensorBoardLogger
 
 from config import TIMITConfig
 
@@ -75,7 +73,7 @@ if __name__ == "__main__":
 
     #Testing the Model
     if hparams.model_checkpoint:
-        model = Wav2VecModel.load_from_checkpoint(hparams.model_checkpoint, HPARAMS=HPARAMS)
+        model = LightningModel.load_from_checkpoint(hparams.model_checkpoint, HPARAMS=HPARAMS)
         trainer = pl.Trainer(fast_dev_run=hparams.dev, 
                             gpus=hparams.gpu, 
                             distributed_backend='ddp'

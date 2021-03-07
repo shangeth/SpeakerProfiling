@@ -28,17 +28,22 @@ class NISPDataset(Dataset):
         self.gender_dict = {'Male': 0,
                             'Female': 1}
 
-        self.train_transform = wavencoder.transforms.Compose([
-            wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random')
-            ])
+        if self.noise_dataset_path:
 
-        # Pad/Crop from the center
+            self.train_transform = wavencoder.transforms.Compose([
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.5),
+                wavencoder.transforms.Clipping(p=0.5),
+                ])
+        else:
+            self.train_transform = wavencoder.transforms.Compose([
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.Clipping(p=0.5),
+                ])
+
         self.test_transform = wavencoder.transforms.Compose([
             wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len)
             ])
-
-        if self.noise_dataset_path:
-            self.noise_transform = wavencoder.transforms.AdditiveNoise(self.noise_dataset_path)
 
     def __len__(self):
         return len(self.files)
@@ -54,10 +59,6 @@ class NISPDataset(Dataset):
 
         if self.is_train:
             wav = self.train_transform(wav)
-
-            # apply noise to wav 50% of time
-            if self.noise_dataset_path and random.random() < 0.5:
-                wav = self.noise_transform(wav)
         else:
             wav = self.test_transform(wav)
         
