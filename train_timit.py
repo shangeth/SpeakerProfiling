@@ -4,7 +4,7 @@ import os
 
 from TIMIT.dataset import TIMITDataset
 from TIMIT.lightning_model import LightningModel
-# from TIMIT.lightning_model import LightningModel
+# from TIMIT.lightning_model_h import LightningModel
 
 
 import pytorch_lightning as pl
