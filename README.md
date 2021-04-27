@@ -4,6 +4,8 @@ This Repository contains the code for estimating the Age, Height and Gender of a
 
 ![model architeture](assets/wav2vecframework.PNG)
 
+[DEMO Colab Notebook](https://colab.research.google.com/drive/1WDBtlhg87BiPlg-IrIiFxyY5eaOVqkob?usp=sharing)
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the required packages for preparing the dataset, training and testing the model.
@@ -32,6 +34,9 @@ python prepare_timit_data.py --path='path to timit data folder'
 # NISP Dataset
 python prepare_nisp_data.pt --nisp_repo_path='path to nisp data repo folder'
 ```
+
+### Update Config and Logger
+Update the config.py file to update the batch_size, gpus, lr, etc and change the preferred logger in train_.py files
 
 ### Training(Dev Model, to make sure everything is set as expected for training) 
 ```
@@ -91,8 +96,8 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 |    Model   	| Height 	|  RMSE  	| Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|
 |:----------:	|:------:	|:------:	|:------:	|:------:	|:----:	|:------:	|:----:	|:------:	|:----------:	|
 |            	|  Male  	| Female 	|  Male  	| Female 	| Male 	| Female 	| Male 	| Female 	|            	|
-|   [1] TMP  	| 6.17   	| 6.93   	| 5.22   	| 5.30   	| 5.60 	| 5.57   	| 4.40 	| 4.42   	|            	|
-| [1] Comb-3 	| 6.13   	| 6.70   	| 5.16   	| 5.30   	| 5.63 	| 4.99   	| 3.80 	| 3.76   	|            	|
+|   [5] TMP  	| 6.17   	| 6.93   	| 5.22   	| 5.30   	| 5.60 	| 5.57   	| 4.40 	| 4.42   	|            	|
+| [5] Comb-3 	| 6.13   	| 6.70   	| 5.16   	| 5.30   	| 5.63 	| 4.99   	| 3.80 	| 3.76   	|            	|
 | Our Method 	| 6.49   	| 6.37   	| 5.32   	| 5.12   	| 5.48 	| 5.71   	| 3.70 	| 4.22   	| 0.984      	|
 
 ## Contributing
@@ -102,3 +107,10 @@ Please make sure to update tests as appropriate.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Reference
+- [1] S. B. Kalluri, D. Vijayasenan and S. Ganapathy, "A Deep Neural Network Based End to End Model for Joint Height and Age Estimation from Short Duration Speech," ICASSP 2019 2019 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), Brighton, United Kingdom, 2019, pp. 6580-6584, doi: 10.1109/ICASSP.2019.8683397.
+- [ 2 ]  Rita Singh, Bhiksha Raj, and James Baker, “Short-term analysis for estimating physical parameters of speakers,” in Proc. of IWBF. IEEE, 2016, pp. 1–6
+- [ 3 ] Joint gender and age estimation based on speech signals using x-vectors and transfer learning ICASSP 2021.
+- [ 4 ] Mporas, I., Ganchev, T. Estimation of unknown speaker’s height from speech. Int J Speech Technol 12, 149–160 (2009). https://doi.org/10.1007/s10772-010-9064-2
+
