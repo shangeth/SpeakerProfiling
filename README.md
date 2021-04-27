@@ -33,6 +33,9 @@ python prepare_timit_data.py --path='path to timit data folder'
 python prepare_nisp_data.pt --nisp_repo_path='path to nisp data repo folder'
 ```
 
+### Update Config and Logger
+Update the config.py file to update the batch_size, gpus, lr, etc and change the preferred logger in train_.py files
+
 ### Training(Dev Model, to make sure everything is set as expected for training) 
 ```
 # TIMIT Dataset
