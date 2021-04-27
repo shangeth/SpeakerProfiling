@@ -6,6 +6,8 @@ import numpy as np
 
 import torchaudio
 import wavencoder
+import random
+import numpy
 
 class TIMITDataset(Dataset):
     def __init__(self,
@@ -44,7 +46,13 @@ class TIMITDataset(Dataset):
             wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len)
             ])
 
-    
+        # self.spectral_transform = torchaudio.transforms.MelSpectrogram(normalized=True)
+        # self.spectral_transform = torchaudio.transforms.MFCC(log_mels=True)
+        # self.spec_aug = wavencoder.transforms.Compose([  
+        #     torchaudio.transforms.FrequencyMasking(10),
+        #     torchaudio.transforms.TimeMasking(10),
+        # ])
+
     def __len__(self):
         return len(self.files)
 
@@ -73,6 +81,11 @@ class TIMITDataset(Dataset):
             wav = self.train_transform(wav)
             if type(wav).__module__ == np.__name__:
                     wav = torch.tensor(wav)
+
+            if random.random() < 0.3:
+                height = height + numpy.random.normal() * 5
+
+            
         else:
             wav = self.test_transform(wav)
         
@@ -81,4 +94,7 @@ class TIMITDataset(Dataset):
 
         if type(wav).__module__ == np.__name__:
             wav = torch.tensor(wav)
+        
+        # wav = self.spec_aug(self.spectral_transform(wav))/100
+        # print(wav.min(), wav.max(), wav.mean(), wav.std())
         return wav, height, age, gender

@@ -3,7 +3,9 @@ from multiprocessing import Pool
 import os
 
 from TIMIT.dataset import TIMITDataset
-from TIMIT.lightning_model import LightningModel
+from TIMIT.lightning_model_h import LightningModel
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score
 
 import pytorch_lightning as pl
 
@@ -11,7 +13,9 @@ from config import TIMITConfig
 
 import torch
 import torch.utils.data as data
-
+from tqdm import tqdm 
+import pandas as pd
+import numpy as np
 
 if __name__ == "__main__":
 
@@ -62,24 +66,48 @@ if __name__ == "__main__":
         wav_len = HPARAMS['data_wav_len'],
         is_train=False
     )
-    ## Testing Dataloader
-    testloader = data.DataLoader(
-        test_set, 
-        batch_size=HPARAMS['data_batch_size'], 
-        shuffle=False, 
-        num_workers=hparams.n_workers
-    )
 
+    csv_path = HPARAMS['speaker_csv_path']
+    df = pd.read_csv(csv_path)
+    h_mean = df['height'].mean()
+    h_std = df['height'].std()
+    a_mean = df['age'].mean()
+    a_std = df['age'].std()
 
     #Testing the Model
     if hparams.model_checkpoint:
         model = LightningModel.load_from_checkpoint(hparams.model_checkpoint, HPARAMS=HPARAMS)
-        trainer = pl.Trainer(fast_dev_run=hparams.dev, 
-                            gpus=hparams.gpu, 
-                            distributed_backend='ddp'
-                            )
+        model.eval()
+        height_pred = []
+        height_true = []
+        age_pred = []
+        age_true = []
+        gender_pred = []
+        gender_true = []
 
-        print('\nTesting on TIMIT Dataset:\n')
-        trainer.test(model, test_dataloaders=testloader)
-    else:
-        print('Model check point for testing is not provided!!!')
+
+        # i = 0 
+        for batch in tqdm(test_set):
+            x, y_h, y_a, y_g = batch
+            y_hat_h = model(x)
+
+            height_pred.append((y_hat_h*h_std+h_mean).item())
+            height_true.append((y_h*h_std+h_mean).item())
+            gender_true.append(y_g)
+
+        female_idx = np.where(np.array(gender_true) == 1)[0].reshape(-1).tolist()
+        male_idx = np.where(np.array(gender_true) == 0)[0].reshape(-1).tolist()
+
+        height_true = np.array(height_true)
+        height_pred = np.array(height_pred)
+
+        hmae = mean_absolute_error(height_true[male_idx], height_pred[male_idx])
+        hrmse = mean_squared_error(height_true[male_idx], height_pred[male_idx], squared=False)
+        print(hrmse, hmae)
+
+        hmae = mean_absolute_error(height_true[female_idx], height_pred[female_idx])
+        hrmse = mean_squared_error(height_true[female_idx], height_pred[female_idx], squared=False)
+        print(hrmse, hmae)
+
+
+

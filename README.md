@@ -61,7 +61,21 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 ```
 
 ## Results
-### TIMIT
+
+### TIMIT Baseline
+| Model                                  	| Height RMSE 	|        	| Height MAE 	|        	| Age RMSE 	|        	| Age MAE 	|        	| Gender Acc 	|
+|----------------------------------------	|-------------	|--------	|------------	|--------	|----------	|--------	|---------	|--------	|------------	|
+|                                        	| Male        	| Female 	| Male       	| Female 	| Male     	| Female 	| Male    	| Female 	|            	|
+| MFCC_LSTM-Attn                         	| 7.5         	| 6.6    	| 5.5        	| 5.2    	| 7.7      	| 8.4    	| 5.6     	| 5.9    	| 0.975      	|
+| MelSpec_LSTM-Attn                      	| 7.7         	| 8.1    	| 5.8        	| 6.5    	| 7.7      	| 8.7    	| 5.5     	| 6.1    	| 0.669      	|
+| MFCC_CNN-LSTM-Attn                     	| 7.5         	| 6.8    	| 5.7        	| 5.3    	| 8.2      	| 8.7    	| 5.4     	| 6.1    	| 0.989      	|
+| MelSpec_CNN-LSTM-Attn                  	| 7.5         	| 7.4    	| 5.8        	| 5.8    	| 8.2      	| 8.4    	| 5.8     	| 5.9    	| 0.96       	|
+| wav2vec(no-finetune)-LSTM-Attn         	| 7.4         	| 6.4    	| 5.5        	| 5.1    	| 7.2      	| 8.2    	| 5.0     	| 5.7    	| 0.994      	|
+| wav2vec(finetune 56)-LSTM-Attn         	| 7.5         	| 6.2    	| 5.5        	| 4.9    	| 7.5      	| 7.9    	| 5.5     	| 5.7    	| 0.994      	|
+| wav2vec(finetune 6)-LSTM-Attn          	| 7.6         	| 6.7    	| 5.6        	| 5.3    	| 7.0      	| 8.2    	| 4.9     	| 5.6    	| 0.993      	|
+| wav2vec(finetune 56)-LSTM-Attn(Only H) 	| 7.4         	| 6.2    	| 5.6        	| 4.9    	|          	|        	|         	|        	|            	|
+
+### TIMIT Previous Results
 |        Model        	|  Height 	|  RMSE  	|  Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|
 |:-------------------:	|:-------:	|:------:	|:-------:	|:------:	|:----:	|:------:	|:----:	|:------:	|:----------:	|
 |                     	|   Male  	| Female 	|   Male  	| Female 	| Male 	| Female 	| Male 	| Female 	|            	|
@@ -70,7 +84,7 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 | [2] 2016 (baseline) 	|   7.0   	|   6.5  	|   5.3   	|   5.2  	|  8.1 	|   9.1  	|  5.7 	|   6.2  	|            	|
 |       [3] 2020      	|    -    	|    -   	|    -    	|    -   	| 7.24 	|  8.12  	| 5.12 	|  **5.29**  	|    **0.996**   	|
 |       [4] 2009      	|   6.8   	|   6.3  	|   5.3   	|   5.1  	|   -  	|    -   	|   -  	|    -   	|            	|
-|      Our Method     	|   7.66  	|   **6.1**  	|   5.72  	|  **4.94**  	| **7.12** 	|  **7.73**  	| **5.09** 	|  5.31  	|    0.992   	|
+
 
 ### NISP
 |    Model   	| Height 	|  RMSE  	| Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|

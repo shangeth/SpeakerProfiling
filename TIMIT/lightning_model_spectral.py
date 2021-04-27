@@ -9,7 +9,7 @@ from pytorch_lightning.metrics.classification import Accuracy
 
 import pandas as pd
 import wavencoder
-from Model.models import Wav2VecLSTM
+from Model.models import SpectralCNNLSTM
 import torch_optimizer as optim
 
 class RMSELoss(nn.Module):
@@ -25,9 +25,9 @@ class LightningModel(pl.LightningModule):
         super().__init__()
         # HPARAMS
         self.save_hyperparameters()
-        self.model = Wav2VecLSTM(HPARAMS['model_hidden_size'])
+        self.model = SpectralCNNLSTM(HPARAMS['model_hidden_size'])
 
-        self.classification_criterion = MSE()
+        self.classification_criterion = nn.BCELoss()
         self.regression_criterion = MSE()
         self.mae_criterion = MAE()
         self.rmse_criterion = RMSELoss()
