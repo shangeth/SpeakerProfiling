@@ -4,6 +4,8 @@ This Repository contains the code for estimating the Age, Height and Gender of a
 
 ![model architeture](assets/wav2vecframework.PNG)
 
+[DEMO Colab Notebook](https://colab.research.google.com/drive/1WDBtlhg87BiPlg-IrIiFxyY5eaOVqkob?usp=sharing)
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the required packages for preparing the dataset, training and testing the model.
