@@ -105,3 +105,10 @@ Please make sure to update tests as appropriate.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Reference
+- [1] S. B. Kalluri, D. Vijayasenan and S. Ganapathy, "A Deep Neural Network Based End to End Model for Joint Height and Age Estimation from Short Duration Speech," ICASSP 2019 2019 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), Brighton, United Kingdom, 2019, pp. 6580-6584, doi: 10.1109/ICASSP.2019.8683397.
+- [ 2 ]  Rita Singh, Bhiksha Raj, and James Baker, “Short-term analysis for estimating physical parameters of speakers,” in Proc. of IWBF. IEEE, 2016, pp. 1–6
+- [ 3 ] Joint gender and age estimation based on speech signals using x-vectors and transfer learning ICASSP 2021.
+- [ 4 ] Mporas, I., Ganchev, T. Estimation of unknown speaker’s height from speech. Int J Speech Technol 12, 149–160 (2009). https://doi.org/10.1007/s10772-010-9064-2
+
