@@ -62,6 +62,7 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 
 ## Results
 
+[Wandb Runs](https://wandb.ai/shangeth/SpeakerProfiling?workspace=user-shangeth)
 ### TIMIT Baseline
 | Model                                  	| Height RMSE 	|        	| Height MAE 	|        	| Age RMSE 	|        	| Age MAE 	|        	| Gender Acc 	|
 |----------------------------------------	|-------------	|--------	|------------	|--------	|----------	|--------	|---------	|--------	|------------	|
