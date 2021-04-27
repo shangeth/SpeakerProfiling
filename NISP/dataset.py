@@ -1,12 +1,10 @@
+import torch
+import torchaudio
 from torch.utils.data import Dataset
+import wavencoder
+
 import os
 import pandas as pd
-import torch
-import numpy as np
-
-import torchaudio
-import wavencoder
-import random
 
 class NISPDataset(Dataset):
     def __init__(self,
@@ -31,13 +29,13 @@ class NISPDataset(Dataset):
         if self.noise_dataset_path:
 
             self.train_transform = wavencoder.transforms.Compose([
-                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='left', crop_position='random'),
                 wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.5),
                 wavencoder.transforms.Clipping(p=0.5),
                 ])
         else:
             self.train_transform = wavencoder.transforms.Compose([
-                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='left', crop_position='random'),
                 wavencoder.transforms.Clipping(p=0.5),
                 ])
 
@@ -73,6 +71,4 @@ class NISPDataset(Dataset):
         height = (height - self.df['Height'].mean())/self.df['Height'].std()
         age = (age - self.df['Age'].mean())/self.df['Age'].std()
 
-        if type(wav).__module__ == np.__name__:
-            wav = torch.tensor(wav)
         return wav, height, age, gender

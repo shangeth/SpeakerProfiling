@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+# torch.use_deterministic_algorithms(True)
 
 import pytorch_lightning as pl
 from pytorch_lightning.metrics.regression import MeanAbsoluteError as MAE

@@ -4,15 +4,14 @@ import os
 
 from TIMIT.dataset import TIMITDataset
 from TIMIT.lightning_model import LightningModel
-
 from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_score
-
 import pytorch_lightning as pl
-
 from config import TIMITConfig
 
 import torch
 import torch.utils.data as data
+# torch.use_deterministic_algorithms(True)
+
 from tqdm import tqdm 
 import pandas as pd
 import numpy as np

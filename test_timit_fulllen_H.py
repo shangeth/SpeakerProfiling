@@ -13,6 +13,8 @@ from config import TIMITConfig
 
 import torch
 import torch.utils.data as data
+# torch.use_deterministic_algorithms(True)
+
 from tqdm import tqdm 
 import pandas as pd
 import numpy as np

@@ -6,8 +6,7 @@ import numpy as np
 
 import torchaudio
 import wavencoder
-import random
-import numpy
+
 
 class TIMITDataset(Dataset):
     def __init__(self,
@@ -32,13 +31,13 @@ class TIMITDataset(Dataset):
         if self.noise_dataset_path:
 
             self.train_transform = wavencoder.transforms.Compose([
-                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
-                wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.5),
-                wavencoder.transforms.Clipping(p=0.5),
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='left', crop_position='random'),
+                wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.2),
+                wavencoder.transforms.Clipping(p=0.2),
                 ])
         else:
             self.train_transform = wavencoder.transforms.Compose([
-                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='left', crop_position='random'),
                 wavencoder.transforms.Clipping(p=0.5),
                 ])
 
@@ -80,12 +79,7 @@ class TIMITDataset(Dataset):
         if self.is_train:
             wav = self.train_transform(wav)
             if type(wav).__module__ == np.__name__:
-                    wav = torch.tensor(wav)
-
-            if random.random() < 0.3:
-                height = height + numpy.random.normal() * 5
-
-            
+                    wav = torch.tensor(wav)            
         else:
             wav = self.test_transform(wav)
         

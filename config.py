@@ -11,7 +11,7 @@ class TIMITConfig(object):
     timit_wav_len = 3 * 16000
     # 16000 * 2
 
-    batch_size = 200
+    batch_size = 150
     epochs = 200
     
     # loss = alpha * height_loss + beta * age_loss + gamma * gender_loss
@@ -27,7 +27,7 @@ class TIMITConfig(object):
     n_workers = 4
 
     # model checkpoint to continue from
-    model_checkpoint = 'SpeakerProfiling/2xzajcah/checkpoints/epoch=77.ckpt'
+    model_checkpoint = None
 
     # noise dataset for augmentation
     noise_dataset_path = '/home/shangeth/noise_dataset'

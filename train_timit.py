@@ -4,8 +4,7 @@ import os
 
 from TIMIT.dataset import TIMITDataset
 from TIMIT.lightning_model import LightningModel
-# from TIMIT.lightning_model import LightningModel
-
+# from TIMIT.lightning_model_h import LightningModel
 
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -16,6 +15,8 @@ from pytorch_lightning import Trainer
 from config import TIMITConfig
 import torch
 import torch.utils.data as data
+# torch.use_deterministic_algorithms(True)
+
 
 if __name__ == "__main__":
 
@@ -112,7 +113,6 @@ if __name__ == "__main__":
         name=TIMITConfig.run_name,
         project='SpeakerProfiling'
     )
-    # logger.log_hyperparams(HPARAMS)
 
     model = LightningModel(HPARAMS)
 
@@ -121,20 +121,11 @@ if __name__ == "__main__":
         mode='min',
         verbose=1)
 
-    early_stop_callback = EarlyStopping(
-        monitor='val/loss',
-        min_delta=0.00,
-        patience=10,
-        verbose=True,
-        mode='min'
-        )
-
     trainer = Trainer(
         fast_dev_run=hparams.dev, 
         gpus=hparams.gpu, 
         max_epochs=hparams.epochs, 
         checkpoint_callback=checkpoint_callback,
-        # early_stop_callback=early_stop_callback,
         callbacks=[
             EarlyStopping(
                 monitor='val/loss',
@@ -146,7 +137,7 @@ if __name__ == "__main__":
         ],
         logger=logger,
         resume_from_checkpoint=hparams.model_checkpoint,
-        # distributed_backend='ddp'
+        distributed_backend='ddp'
         )
 
     trainer.fit(model, train_dataloader=trainloader, val_dataloaders=valloader)
