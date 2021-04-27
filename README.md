@@ -94,8 +94,8 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 |    Model   	| Height 	|  RMSE  	| Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|
 |:----------:	|:------:	|:------:	|:------:	|:------:	|:----:	|:------:	|:----:	|:------:	|:----------:	|
 |            	|  Male  	| Female 	|  Male  	| Female 	| Male 	| Female 	| Male 	| Female 	|            	|
-|   [1] TMP  	| 6.17   	| 6.93   	| 5.22   	| 5.30   	| 5.60 	| 5.57   	| 4.40 	| 4.42   	|            	|
-| [1] Comb-3 	| 6.13   	| 6.70   	| 5.16   	| 5.30   	| 5.63 	| 4.99   	| 3.80 	| 3.76   	|            	|
+|   [5] TMP  	| 6.17   	| 6.93   	| 5.22   	| 5.30   	| 5.60 	| 5.57   	| 4.40 	| 4.42   	|            	|
+| [5] Comb-3 	| 6.13   	| 6.70   	| 5.16   	| 5.30   	| 5.63 	| 4.99   	| 3.80 	| 3.76   	|            	|
 | Our Method 	| 6.49   	| 6.37   	| 5.32   	| 5.12   	| 5.48 	| 5.71   	| 3.70 	| 4.22   	| 0.984      	|
 
 ## Contributing
