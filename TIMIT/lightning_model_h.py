@@ -9,36 +9,34 @@ from pytorch_lightning.metrics.classification import Accuracy
 
 import pandas as pd
 import wavencoder
-from Model.models import Wav2VecLSTMH
 import torch_optimizer as optim
 
-class RMSELoss(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.mse = nn.MSELoss()
-        
-    def forward(self,yhat,y):
-        return torch.sqrt(self.mse(yhat,y))
+
+from Model.models import Wav2VecLSTMH, SpectralLSTMH, MultiScaleH
+from Model.utils import RMSELoss
 
 class LightningModel(pl.LightningModule):
     def __init__(self, HPARAMS):
         super().__init__()
         # HPARAMS
         self.save_hyperparameters()
-        self.model = Wav2VecLSTMH(HPARAMS['model_hidden_size'])
+        self.models = {
+            'wav2vecLSTMAttn': Wav2VecLSTMH,
+            'MultiScale' : MultiScaleH,
+            'LSTMAttn' : SpectralLSTMH,
+        }
+        self.model = self.models[HPARAMS['model_type']](HPARAMS['hidden_size'])
 
         self.regression_criterion = MSE()
         self.mae_criterion = MAE()
         self.rmse_criterion = RMSELoss()
 
-        self.lr = HPARAMS['training_lr']
+        self.lr = HPARAMS['lr']
 
         self.csv_path = HPARAMS['speaker_csv_path']
         self.df = pd.read_csv(self.csv_path)
         self.h_mean = self.df['height'].mean()
         self.h_std = self.df['height'].std()
-        self.a_mean = self.df['age'].mean()
-        self.a_std = self.df['age'].std()
 
         print(f"Model Details: #Params = {self.count_total_parameters()}\t#Trainable Params = {self.count_trainable_parameters()}")
 
@@ -52,7 +50,7 @@ class LightningModel(pl.LightningModule):
         return self.model(x)
 
     def configure_optimizers(self):
-        optimizer = optim.DiffGrad(self.parameters(), lr=self.lr)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         return [optimizer]
 
     def training_step(self, batch, batch_idx):
@@ -112,13 +110,9 @@ class LightningModel(pl.LightningModule):
         male_idx = torch.nonzero(1-idx).view(-1)
 
         male_height_mae = self.mae_criterion(y_hat_h[male_idx]*self.h_std+self.h_mean, y_h[male_idx]*self.h_std+self.h_mean)
-
         femal_height_mae = self.mae_criterion(y_hat_h[female_idx]*self.h_std+self.h_mean, y_h[female_idx]*self.h_std+self.h_mean)
-
         male_height_rmse = self.rmse_criterion(y_hat_h[male_idx]*self.h_std+self.h_mean, y_h[male_idx]*self.h_std+self.h_mean)
-
         femal_height_rmse = self.rmse_criterion(y_hat_h[female_idx]*self.h_std+self.h_mean, y_h[female_idx]*self.h_std+self.h_mean)
-
         return {
                 'male_height_mae':male_height_mae.item(),
                 'female_height_mae':femal_height_mae.item(),

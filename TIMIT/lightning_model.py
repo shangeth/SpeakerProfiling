@@ -10,8 +10,10 @@ from pytorch_lightning.metrics.classification import Accuracy
 
 import pandas as pd
 import wavencoder
-from Model.models import Wav2VecLSTM
 import torch_optimizer as optim
+
+
+from Model.models import Wav2VecLSTM, SpectralMultiScale, SpectralCNNLSTM
 
 class RMSELoss(nn.Module):
     def __init__(self):
@@ -26,7 +28,13 @@ class LightningModel(pl.LightningModule):
         super().__init__()
         # HPARAMS
         self.save_hyperparameters()
-        self.model = Wav2VecLSTM(HPARAMS['model_hidden_size'])
+        self.models = {
+            'wav2vecLSTMAttn': Wav2VecLSTM,
+            'spectralCNNLSTM' : SpectralCNNLSTM,
+            'MultiScale' : SpectralMultiScale,
+
+        }
+        self.model = self.models[HPARAMS['model_type']](HPARAMS['hidden_size'])
 
         self.classification_criterion = MSE()
         self.regression_criterion = MSE()
@@ -34,11 +42,11 @@ class LightningModel(pl.LightningModule):
         self.rmse_criterion = RMSELoss()
         self.accuracy = Accuracy()
 
-        self.alpha = HPARAMS['model_alpha']
-        self.beta = HPARAMS['model_beta']
-        self.gamma = HPARAMS['model_gamma']
+        self.alpha = HPARAMS['alpha']
+        self.beta = HPARAMS['beta']
+        self.gamma = HPARAMS['gamma']
 
-        self.lr = HPARAMS['training_lr']
+        self.lr = HPARAMS['lr']
 
         self.csv_path = HPARAMS['speaker_csv_path']
         self.df = pd.read_csv(self.csv_path)

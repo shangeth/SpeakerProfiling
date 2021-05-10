@@ -19,6 +19,20 @@ class TIMITConfig(object):
     beta = 1
     gamma = 1
 
+    # training type - AHG/H
+    training_type = 'H'
+
+    # data type - raw/spectral
+    data_type = 'spectral' 
+
+    # model type
+    ## AHG 
+    # wav2vecLSTMAttn/spectralCNNLSTM/MultiScale
+    
+    ## H
+    # wav2vecLSTMAttn/MultiScale/LSTMAttn
+    model_type = 'MultiScale'
+
     # hidden dimension of LSTM and Dense Layers
     hidden_size = 128
 
@@ -28,14 +42,14 @@ class TIMITConfig(object):
 
     # model checkpoint to continue from
     model_checkpoint = None
-
+    
     # noise dataset for augmentation
     noise_dataset_path = '/home/shangeth/noise_dataset'
 
     # LR of optimizer
     lr = 1e-3
 
-    run_name = 'wav2vec2-LSTM-H_finetune'
+    run_name = data_type + '_' + training_type + '_' + model_type
 
 
 class NISPConfig(object):

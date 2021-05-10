@@ -11,29 +11,27 @@ import wavencoder
 class TIMITDataset(Dataset):
     def __init__(self,
     wav_folder,
-    csv_file,
-    wav_len=48000,
+    hparams,
     is_train=True,
-    noise_dataset_path=None
     ):
         self.wav_folder = wav_folder
         self.files = os.listdir(self.wav_folder)
-        self.csv_file = csv_file
+        self.csv_file = hparams.speaker_csv_path
         self.df = pd.read_csv(self.csv_file)
         self.is_train = is_train
-        self.wav_len = wav_len
-        self.noise_dataset_path = noise_dataset_path
+        self.wav_len = hparams.timit_wav_len
+        self.noise_dataset_path = hparams.noise_dataset_path
+        self.data_type = hparams.data_type
 
         self.speaker_list = self.df.loc[:, 'ID'].values.tolist()
         self.df.set_index('ID', inplace=True)
         self.gender_dict = {'M' : 0, 'F' : 1}
 
         if self.noise_dataset_path:
-
             self.train_transform = wavencoder.transforms.Compose([
-                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='left', crop_position='random'),
-                wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.2),
-                wavencoder.transforms.Clipping(p=0.2),
+                wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='random', crop_position='random'),
+                wavencoder.transforms.AdditiveNoise(self.noise_dataset_path, p=0.5),
+                wavencoder.transforms.Clipping(p=0.5),
                 ])
         else:
             self.train_transform = wavencoder.transforms.Compose([
@@ -42,15 +40,16 @@ class TIMITDataset(Dataset):
                 ])
 
         self.test_transform = wavencoder.transforms.Compose([
-            wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len)
+            wavencoder.transforms.PadCrop(pad_crop_length=self.wav_len, pad_position='left', crop_position='center')
             ])
 
-        # self.spectral_transform = torchaudio.transforms.MelSpectrogram(normalized=True)
-        # self.spectral_transform = torchaudio.transforms.MFCC(log_mels=True)
-        # self.spec_aug = wavencoder.transforms.Compose([  
-        #     torchaudio.transforms.FrequencyMasking(10),
-        #     torchaudio.transforms.TimeMasking(10),
-        # ])
+        if self.data_type == 'spectral':
+            # self.spectral_transform = torchaudio.transforms.MelSpectrogram(normalized=True)
+            self.spectral_transform = torchaudio.transforms.MFCC(n_mfcc=40, log_mels=True)
+            self.spec_aug = wavencoder.transforms.Compose([  
+                torchaudio.transforms.FrequencyMasking(5),
+                torchaudio.transforms.TimeMasking(5),
+            ])
 
     def __len__(self):
         return len(self.files)
@@ -77,18 +76,16 @@ class TIMITDataset(Dataset):
 
         wav, _ = torchaudio.load(os.path.join(self.wav_folder, file))
         if self.is_train:
-            wav = self.train_transform(wav)
-            if type(wav).__module__ == np.__name__:
-                    wav = torch.tensor(wav)            
+            wav = self.train_transform(wav)  
+            if self.data_type == 'spectral':
+                wav = self.spectral_transform(wav)
+                wav = self.spec_aug(wav)
+
         else:
-            wav = self.test_transform(wav)
+            # wav = self.test_transform(wav)
+            if self.data_type == 'spectral':
+                wav = self.spectral_transform(wav)
         
         height = (height - self.df['height'].mean())/self.df['height'].std()
         age = (age - self.df['age'].mean())/self.df['age'].std()
-
-        if type(wav).__module__ == np.__name__:
-            wav = torch.tensor(wav)
-        
-        # wav = self.spec_aug(self.spectral_transform(wav))/100
-        # print(wav.min(), wav.max(), wav.mean(), wav.std())
         return wav, height, age, gender
