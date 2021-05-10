@@ -29,10 +29,10 @@ git clone https://github.com/iiscleap/NISP-Dataset.git
 ### Prepare the dataset for training and testing
 ```
 # TIMIT Dataset
-python prepare_timit_data.py --path='path to timit data folder'
+python TIMIT/prepare_timit_data.py --path='path to timit data folder'
 
 # NISP Dataset
-python prepare_nisp_data.pt --nisp_repo_path='path to nisp data repo folder'
+python NISP/prepare_nisp_data.pt --nisp_repo_path='path to nisp data repo folder'
 ```
 
 ### Update Config and Logger
