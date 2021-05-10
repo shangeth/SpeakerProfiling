@@ -88,4 +88,14 @@ class TIMITDataset(Dataset):
         
         height = (height - self.df['height'].mean())/self.df['height'].std()
         age = (age - self.df['age'].mean())/self.df['age'].std()
+<<<<<<< HEAD
         return wav, height, age, gender
+=======
+
+        if type(wav).__module__ == np.__name__:
+            wav = torch.tensor(wav)
+        
+        # wav = self.spec_aug(self.spectral_transform(wav))/100
+        # print(wav.min(), wav.max(), wav.mean(), wav.std())
+        return wav, height, age, gender
+>>>>>>> 9533cd02cfa4ddb9aee40945d53e3354b5d5d960
