@@ -80,6 +80,7 @@ python test_nisp.py --data_path='path to final data folder' --model_checkpoint='
 | wav2vec(finetune 56)-LSTM-Attn         	| 7.5         	| 6.2    	| 5.5        	| 4.9    	| 7.5      	| 7.9    	| 5.5     	| 5.7    	| 0.994      	|
 | wav2vec(finetune 6)-LSTM-Attn          	| 7.6         	| 6.7    	| 5.6        	| 5.3    	| 7.0      	| 8.2    	| 4.9     	| 5.6    	| 0.993      	|
 | wav2vec(finetune 56)-LSTM-Attn(Only H) 	| 7.4         	| 6.2    	| 5.6        	| 4.9    	|          	|        	|         	|        	|            	|
+| multi-scale-cnn(Only H) 	| 7.5         	| 6.1    	| 5.9        	| 4.7    	|          	|        	|         	|        	|            	|
 
 ### TIMIT Previous Results
 |        Model        	|  Height 	|  RMSE  	|  Height 	|   MAE  	|  Age 	|  RMSE  	|  Age 	|   MAE  	| Gender Acc 	|
