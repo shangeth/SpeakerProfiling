@@ -17,7 +17,7 @@ pip install -r requirements.txt
 ## Usage
 
 ### Download the dataset
-```
+```bash
 # Timit Dataset
 wget https://data.deepai.org/timit.zip
 unzip timit.zip -d 'path to timit data folder'
@@ -27,7 +27,7 @@ git clone https://github.com/iiscleap/NISP-Dataset.git
 ```
 
 ### Prepare the dataset for training and testing
-```
+```bash
 # TIMIT Dataset
 python TIMIT/prepare_timit_data.py --path='path to timit data folder'
 
@@ -39,7 +39,7 @@ python NISP/prepare_nisp_data.pt --nisp_repo_path='path to nisp data repo folder
 Update the config.py file to update the batch_size, gpus, lr, etc and change the preferred logger in train_.py files
 
 ### Training(Dev Model, to make sure everything is set as expected for training) 
-```
+```bash
 # TIMIT Dataset
 python train_timit.py --dev=True --data_path='path to final data folder'
 
@@ -48,7 +48,7 @@ python train_nisp.py --dev=True --data_path='path to final data folder'
 ```
 
 ### Training(also check for other arguments in the train_....py file)
-```
+```bash
 # TIMIT Dataset
 python train_timit.py --data_path='path to final data folder'
 
@@ -57,7 +57,7 @@ python train_nisp.py --data_path='path to final data folder'
 ```
 
 ### Test the Model
-```
+```bash
 # TIMIT Dataset
 python test_timit.py --data_path='path to final data folder' --model_checkpoint='path to saved model checkpoint'
 
